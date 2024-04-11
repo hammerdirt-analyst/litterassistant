@@ -37,7 +37,7 @@ jupyter_client
 jupyter_core
 jupyterlab_widgets
 kiwisolver
-llvmlite==0.42.0
+llvmlite
 logical-unification
 markdown-it-py
 MarkupSafe
@@ -45,9 +45,9 @@ matplotlib
 matplotlib-inline
 mdurl
 miniKanren
-mkl-service==2.4.1
-multipledispatch==0.6.0
-munkres==1.1.4
+mkl-service
+multipledispatch
+munkres
 nest_asyncio
 numba
 numpy
@@ -60,7 +60,7 @@ Pillow
 pkgutil_resolve_name
 platformdirs
 prompt-toolkit
-protobuf==4.25.3
+protobuf
 psutil
 ptyprocess
 pure-eval
