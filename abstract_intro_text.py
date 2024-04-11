@@ -1,12 +1,12 @@
 # abstract and introduction text
 
 absen = 'The first federal report on litter density was 2020 - 2021 ([IQAASL]' \
-        '("https://hammerdirt-analyst.github.io/IQAASL-End-0f-Sampling-2021/land_use_correlation.html")). Plastics and water ' \
+        '(https://hammerdirt-analyst.github.io/IQAASL-End-0f-Sampling-2021/)). Plastics and water ' \
         'quality are still a topic of debate and part of the UN SDGs ([UN-SDG](https://sdgs.un.org/goals)). There is ' \
         'a consensus effort to reduce plastics in the environment by both extraction and prevention. ' \
         'This application aims to use the data gathered from extraction to inform decisions about prevention. ' \
         'With the consensus goal to reduce exposure to plastics based on the principal of precaution as defined ' \
-        'by the EU ([Thresholds]( "https://mcc.jrc.ec.europa.eu/main/dev.py?N=41&O=453")).'
+        'by the EU ([Thresholds]("https://mcc.jrc.ec.europa.eu/main/dev.py?N=41&O=453")).'
 
 absen2 = 'Here we present the observations in an effort to answer one question:\n\n> _**What am I going to find at ' \
          'the beach today ?**_\n\n'
@@ -28,8 +28,8 @@ absen4 = "In reference to reliability of the data it is important to remember:\n
 absen5 = "> _Therefore, we can not say how much there is. We can only speak to how much we found and how much we " \
          "are likely to find based on the local conditions. How one differs from the other is another discussion._"
 
-absfr = 'Le premier rapport fédéral sur la densité des déchets était de 2020 à 2021 ([IQAASL]' \
-        '("https://hammerdirt-analyst.github.io/IQAASL-End-0f-Sampling-2021/land_use_correlation.html")). Les ' \
+absfr = 'Le premier rapport fédéral sur la densité des déchets était de 2020 à 2021 ([IQAASL](' \
+        'https://hammerdirt-analyst.github.io/IQAASL-End-0f-Sampling-2021/)). Les ' \
         'plastiques et la qualité de l\'eau sont toujours un sujet de débat et font partie des ODD des Nations unies ' \
         '([UN-SDG](https://sdgs.un.org/goals)). Il existe un effort pour réduire les plastiques dans ' \
         'l\'environnement à la fois par l\'extraction et la prévention. Cette application vise à utiliser les ' \
@@ -60,7 +60,7 @@ absfr5 = "> _Par conséquent, nous ne pouvons pas dire combien il y en a. Nous p
          "Comment l'un diffère de l'autre est une autre discussion._"
 
 absde = 'Der erste Bundesbericht zur Dichte von Abfällen war 2020 - 2021 ([IQAASL]' \
-        '("https://hammerdirt-analyst.github.io/IQAASL-End-0f-Sampling-2021/land_use_correlation.html")). Kunststoffe und Wasserqualität ' \
+        '(https://hammerdirt-analyst.github.io/IQAASL-End-0f-Sampling-2021/)). Kunststoffe und Wasserqualität ' \
         'sind nach wie vor ein Thema der Diskussion und Teil der UN-SDGs ([UN-SDG](https://sdgs.un.org/goals)). Es gibt ' \
         'eine konsensuale Anstrengung, Kunststoffe in der Umwelt sowohl durch Extraktion als auch durch Prävention zu reduzieren. ' \
         'Diese Anwendung zielt darauf ab, die Daten, die aus der Extraktion gewonnen wurden, zu verwenden, um Entscheidungen zur Prävention zu treffen. ' \
