@@ -1,0 +1,17 @@
+{
+    "feature_variables": [
+        "orchards",
+        "vineyards",
+        "buildings",
+        "forest",
+        "undefined",
+        "public services",
+        "streets"
+    ],
+    "Y": "pcs/m",
+    "y_type": "float",
+    "location_label": "location",
+    "index_label": "sample_id",
+    "survey_data": "lakes.csv",
+    "data_directory": "data"
+}
