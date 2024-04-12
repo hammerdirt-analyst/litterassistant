@@ -152,7 +152,7 @@ def main():
             data['date'] = pd.to_datetime(data['date'])
 
             # apply the requested parameters to the data
-            report_data = session_config.apply_requested_parameters(data, report_parameters)
+            report_data = session_config.apply_requested_parameters(data.copy(), report_parameters)
 
             # 2 create a report object with the data
             this_report = reports.AReport(dfc=report_data.copy())
@@ -279,11 +279,11 @@ def main():
                 width=700,
                 height=400)
             a_popup = FoliumPopup("<div style='min-width:200px; word-break: keep-all;'><h4>Home of good "
-                                  "ideas</h4><p>Biel, Switzerland</p></div>",
+                                  "ideas</h4><p>Biel, Switzerland. The home of hammerdirt</p></div>",
                                   show=True)
             folium.Marker(
                 location=[47.138784974569866, 7.246126171339943],
-                tooltip="I am not submitted!",
+                tooltip="Good things happen here!",
                 popup=a_popup,
                 icon=folium.Icon(icon="cloud"),
     

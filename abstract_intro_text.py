@@ -6,7 +6,7 @@ absen = 'The first federal report on litter density was 2020 - 2021 ([IQAASL]' \
         'a consensus effort to reduce plastics in the environment by both extraction and prevention. ' \
         'This application aims to use the data gathered from extraction to inform decisions about prevention. ' \
         'With the consensus goal to reduce exposure to plastics based on the principal of precaution as defined ' \
-        'by the EU ([Thresholds]("https://mcc.jrc.ec.europa.eu/main/dev.py?N=41&O=453")).'
+        'by the EU ([Thresholds](https://publications.jrc.ec.europa.eu/repository/handle/JRC121707)).'
 
 absen2 = 'Here we present the observations in an effort to answer one question:\n\n> _**What am I going to find at ' \
          'the beach today ?**_\n\n'
@@ -35,7 +35,7 @@ absfr = 'Le premier rapport fédéral sur la densité des déchets était de 202
         'l\'environnement à la fois par l\'extraction et la prévention. Cette application vise à utiliser les ' \
         'données recueillies lors de l\'extraction pour éclairer les décisions concernant la prévention. ' \
         'Avec l\'objectif de réduire l\'exposition aux plastiques sur la base du principe de précaution tel que ' \
-        'défini par l\'UE ([Thresholds]( "https://mcc.jrc.ec.europa.eu/main/dev.py?N=41&O=453")).'
+        'défini par l\'UE ([Thresholds](https://publications.jrc.ec.europa.eu/repository/handle/JRC121707)).'
 
 absfr2 = 'Nous présentons ici les observations dans le but de répondre à une question :\n\n> _**Qu\'est-ce que je ' \
          'vais trouver à la plage aujourd\'hui ?**_\n\n'
@@ -65,7 +65,7 @@ absde = 'Der erste Bundesbericht zur Dichte von Abfällen war 2020 - 2021 ([IQAA
         'eine konsensuale Anstrengung, Kunststoffe in der Umwelt sowohl durch Extraktion als auch durch Prävention zu reduzieren. ' \
         'Diese Anwendung zielt darauf ab, die Daten, die aus der Extraktion gewonnen wurden, zu verwenden, um Entscheidungen zur Prävention zu treffen. ' \
         'Mit dem gemeinsamen Ziel, die Exposition gegenüber Kunststoffen auf der Grundlage des Vorsorgeprinzips zu reduzieren, wie es ' \
-        'von der EU definiert wird ([Thresholds]( "https://mcc.jrc.ec.europa.eu/main/dev.py?N=41&O=453")).'
+        'von der EU definiert wird ([Thresholds](https://publications.jrc.ec.europa.eu/repository/handle/JRC121707)).'
 
 absde2 = 'Hier präsentieren wir die Beobachtungen in dem Bemühen, eine Frage zu beantworten:\n\n> _**Was werde ' \
          'ich heute am Strand finden ?**_\n\n'
@@ -90,8 +90,8 @@ absde5 = "> _Daher können wir nicht sagen, wie viel es gibt. Wir können nur da
          "wahrscheinlich basierend auf den lokalen Bedingungen finden werden. Wie sich das eine vom anderen unterscheidet, ist eine andere Diskussion._"
 
 abstracten = [absen, absen2, absen3, absen4, absen5]
-abstractfr = [absfr, absfr2, absfr3, absfr4]
-abstractde = [absde, absde2, absde3, absde4]
+abstractfr = [absfr, absfr2, absfr3, absfr4, absfr5]
+abstractde = [absde, absde2, absde3, absde4, absde5]
 
 title_section = {
     'en': abstracten,
