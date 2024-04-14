@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42b45df8-994d-4a57-b4a5-13f4d282199e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/empiricaldistdowney.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/abstract_intro_text.py" beforeDir="false" afterPath="$PROJECT_DIR$/abstract_intro_text.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +69,7 @@
       <workItem from="1712839856659" duration="1249000" />
       <workItem from="1712915183293" duration="34000" />
       <workItem from="1712915224270" duration="415000" />
-      <workItem from="1712916048350" duration="1379000" />
+      <workItem from="1712916048350" duration="4272000" />
     </task>
     <servers />
   </component>
