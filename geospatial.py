@@ -1,12 +1,34 @@
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
-
 import session_config
 from session_config import feature_variables
 from session_config import object_of_interest
 from session_config import index_label, location_label, Y, Q
 from session_config import agg_groups
+
+
+
+
+words_land_use_profile = {
+    'en': 'Percent of land attributed v/s % of samples',
+    'fr': 'Pourcentage d\'occupation du sol v/s % d\'échantillons',
+    'de': 'Prozent des Landes zugeschrieben v/s % der Proben'
+}
+
+words_land_use_litter_rates = {
+    'en': 'Percent of land attributed v/s trash per meter of shoreline',
+    'fr': 'Pourcentage d\'occupation du sol v/s déchets par mètre de rivage',
+    'de': 'Prozent des Landes zugeschrieben v/s Stück Müll pro Meter Ufer'
+}
+
+column_labels_land_use = {
+    1: '0 - 20%',
+    2: '20 - 40%',
+    3: '40 - 60%',
+    4: '60 - 80%',
+    5: '80 - 100%'
+}
 
 
 def select_x_and_y(df_target, df_feature, Y: str = Y, Q: str = Q):
@@ -91,27 +113,6 @@ def find_correlated_values(df, threshold: float = session_config.corr_threshold)
                 correlated_features.append((labels[i], labels[j]))
          
     return correlated_features
-
-
-words_land_use_profile = {
-    'en': 'Percent of land attributed v/s % of samples',
-    'fr': 'Pourcentage d\'occupation du sol v/s % d\'échantillons',
-    'de': 'Prozent des Landes zugeschrieben v/s % der Proben'
-}
-
-words_land_use_litter_rates = {
-    'en': 'Percent of land attributed v/s trash per meter of shoreline',
-    'fr': 'Pourcentage d\'occupation du sol v/s déchets par mètre de rivage',
-    'de': 'Prozent des Landes zugeschrieben v/s Stück Müll pro Meter Ufer'
-}
-
-column_labels_land_use = {
-    1: '0 - 20%',
-    2: '20 - 40%',
-    3: '40 - 60%',
-    4: '60 - 80%',
-    5: '80 - 100%'
-}
 
 
 def make_multi_index(column_labels: dict, group_label: dict, nlabels: int, session_language: str = 'en'):

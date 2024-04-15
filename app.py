@@ -15,7 +15,7 @@ from session_config import data_directory, survey_data, unpack_with_pandas
 import geospatial
 import reports
 import display
-from display import display_scatter_plot
+from display import scatter_plot
 
 
 # content for report sections
@@ -35,16 +35,6 @@ the_most_common_label = {
     'fr': 'Les objets les plus courants',
     'de': 'Die häufigsten Objekte'
 }
-
-
-def the_most_common_title(an_int: int = 0, session_language: str = 'en'):
-    the_title = f'__{the_most_common_label[session_language]} :__ _{an_int}'
-    ending = {
-        'en': '% of all objects identified_',
-        'fr': '% de tous les objets identifiés_',
-        'de': '% aller identifizierten Objekte_'
-    }
-    return f'{the_title} {ending[session_language]}'
 
 
 profile_of_survey_locations = {
@@ -92,6 +82,15 @@ submitt_labels = {
     'fr': 'Faire un rapport',
     'de': 'Bericht erstellen'
 }
+
+def the_most_common_title(an_int: int = 0, session_language: str = 'en'):
+    the_title = f'__{the_most_common_label[session_language]} :__ _{an_int}'
+    ending = {
+        'en': '% of all objects identified_',
+        'fr': '% de tous les objets identifiés_',
+        'de': '% aller identifizierten Objekte_'
+    }
+    return f'{the_title} {ending[session_language]}'
 
 def main():
 
@@ -168,10 +167,10 @@ def main():
             # scatterplot data
             samp_results = this_report.sample_results(**{'info_columns': ['canton', 'city']})
             samp_results['date'] = pd.to_datetime(samp_results['date'])
-            scatter_chart = display_scatter_plot(samp_results['date'], samp_results['pcs/m'],
-                                                 data=samp_results, categorical=False,
-                                                 session_language=language_choice,
-                                                 gradient=True)
+            scatter_chart = scatter_plot(samp_results['date'], samp_results['pcs/m'],
+                                         data=samp_results, categorical=False,
+                                         session_language=language_choice,
+                                         gradient=True)
             
             # 4 create the components for the land use report
             target_df = this_report.sample_results()
@@ -250,7 +249,6 @@ def main():
             with st.container():
                 # the most common objects
                 st.markdown(the_most_common_title(int(pct_total), language_choice))
-                
                 st.write(the_most_common.to_html(escape=False), unsafe_allow_html=True)
                 st.markdown('<br />', unsafe_allow_html=True)
                 st.markdown(data_tab_context[2])
@@ -263,9 +261,9 @@ def main():
         st.markdown(land_use_tab_context[1])
         
         if submitted:
-            
             m = folium.Map(**folium_map_kwargs)
             m = display.define_folium_markers(m, marker_stats, session_language=language_choice)
+
         else:
             # default map data
             m = folium.Map(
@@ -275,7 +273,6 @@ def main():
                 zoom_start=8,
                 min_zoom=7,
                 max_zoom=session_config.map_tiles['max_zoom'],
-        
                 width=700,
                 height=400)
             a_popup = FoliumPopup("<div style='min-width:200px; word-break: keep-all;'><h4>Home of good "

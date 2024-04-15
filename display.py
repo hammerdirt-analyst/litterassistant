@@ -1,7 +1,6 @@
 import folium
 from folium import Marker
 from folium.plugins import MarkerCluster
-
 import pandas as pd
 
 import session_config
@@ -15,6 +14,10 @@ from bokeh.plotting import figure
 from session_config import data_directory, code_definitions_c, unpack_with_pandas
 from session_config import corr_threshold
 
+# the material and definitions for each code are on
+# on a different table. In this instance we call the
+# session config to get the data for codes and the lat
+# lon data for the beaches
 codes = unpack_with_pandas((".", data_directory, code_definitions_c))
 code_definitions_map = codes[['code', 'en', 'fr', 'de']].set_index('code')
 code_material = codes[['code', 'material']].set_index('code')
@@ -22,6 +25,7 @@ code_material = codes[['code', 'material']].set_index('code')
 beaches = unpack_with_pandas((".", data_directory, session_config.geo_data))
 lat_lon = beaches[['slug', 'latitude', 'longitude']].set_index('slug')
 
+# definitions for charts and tables
 land_use_map = {
     'en': {
         'orchards': 'Orchards',
@@ -202,7 +206,7 @@ material_languages = {
 # the formatting for pd.styler
 format_kwargs = dict(precision=2, thousands="'", decimal=",")
 
-# this defines the css rules for the note-book table displays
+# this defines the css rules for the table displays
 header_row = {'selector':'th', 'props': f'background-color: #FFF; font-size:12px; text-align:left; width: auto; word-break: keep-all;'}
 even_rows = {"selector": 'tr:nth-child(even)', 'props': f'background-color: rgba(139, 69, 19, 0.08);'}
 odd_rows = {'selector': 'tr:nth-child(odd)', 'props': 'background: #FFF;'}
@@ -213,7 +217,6 @@ table_caption_top = {'selector': 'caption', 'props': 'caption-side: top; font-si
 caption_css = {'selector': 'caption', 'props': 'caption-side: top; font-size:.9em; text-align: left; font-style: italic; color: #000;'}
 table_first_column_left = {'selector': 'td:nth-child(1)', 'props': 'text-align: left;'}
 table_css_styles = [even_rows, odd_rows, table_font, header_row, table_data, table_caption]
-
 highlight_props = 'background-color:#FAE8E8'
 
 # a color gradient for heat maps
@@ -369,8 +372,8 @@ def apply_gradient(palette='RdYlGn9', y: list = None):
     return color_mapper
 
 
-def display_scatter_plot(x, y, figure_kwargs: dict = default_chart_args, session_language: str = 'en',
-                         gradient: bool = False, palette: str = 'RdYlGn9', categorical: bool = False, data: pd.DataFrame = None):
+def scatter_plot(x, y, figure_kwargs: dict = default_chart_args, session_language: str = 'en',
+                 gradient: bool = False, palette: str = 'RdYlGn9', categorical: bool = False, data: pd.DataFrame = None):
     """Display the scatter plot"""
     from bokeh.transform import factor_cmap
     from bokeh.models import Scatter
@@ -409,9 +412,9 @@ def most_common(df, session_language: str = 'en'):
        'fr': "Les objets les plus courants sont une combinaison des dix objets les plus abondants et de ceux qui se "
              "trouvent dans plus de 50% des échantillons. Certains objets sont fréquemment trouvés mais en faibles "
              "quantités. D'autres objets sont trouvés dans moins d'échantillons mais en plus grandes quantités.",
-         'de': "Die häufigsten Objekte sind eine Kombination der zehn häufigsten Objekte und derjenigen, die in mehr als "
-                "50% der Proben gefunden werden. Einige Objekte werden häufig, aber in geringen Mengen gefunden. Andere "
-                "Objekte werden in weniger Proben, aber in größeren Mengen gefunden."
+       'de': "Die häufigsten Objekte sind eine Kombination der zehn häufigsten Objekte und derjenigen, die in mehr als "
+             "50% der Proben gefunden werden. Einige Objekte werden häufig, aber in geringen Mengen gefunden. Andere "
+             "Objekte werden in weniger Proben, aber in größeren Mengen gefunden."
     }
 
     caption = {
@@ -425,11 +428,12 @@ def most_common(df, session_language: str = 'en'):
     a = df.sort_values('quantity', ascending=False).head(10).code.unique()
     
     b = df[df['rate'] >= 0.5].code.unique()
-    data = df[df.code.isin(list(set([*a, *b])))]
+    data = df[df.code.isin([{*a, *b}])]
     mc_q = data.quantity.sum()
     pct_total = mc_q / df.quantity.sum()
     data = data[most_common_columns['en'].keys()].copy()
     data['code'] = code_definitions(data['code'], session_language)
+    data = data.sort_values('quantity', ascending=False)
     data.rename(columns=most_common_columns[session_language], inplace=True)
     data = data.style.set_table_styles(table_style).set_caption(caption[session_language]).format(**format_kwargs)
     
@@ -477,9 +481,9 @@ def landuse_profile(aprofile: pd.DataFrame, session_language: str = 'en', nsampl
         'en': "The highlighted cell is the maximum value in the row. Each cell represents the proportion of samples "
               "that were conducted in the land use category.",
         'fr': "La cellule en surbrillance est la valeur maximale de la ligne. Chaque cellule représente la proportion "
-                "d'échantillons effectués dans la catégorie d'utilisation des sols.",
+              "d'échantillons effectués dans la catégorie d'utilisation des sols.",
         'de': "Die hervorgehobene Zelle ist der Maximalwert in der Zeile. Jede Zelle stellt den Anteil der Proben dar, "
-                "die in der Landnutzungskategorie durchgeführt wurden."
+              "die in der Landnutzungskategorie durchgeführt wurden."
     }
     
     caption = {
@@ -506,9 +510,9 @@ def litter_rates_per_feature(aresult: pd.DataFrame, session_language: str = 'en'
         'en': "The highlighted cell is the maximum value in the row. Each cell represents the average observed trash "
               "per meter in the land use category.",
         'fr': "La cellule en surbrillance est la valeur maximale de la ligne. Chaque cellule représente le taux moyen de "
-                "déchets observé par mètre dans la catégorie d'utilisation des sols.",
+              "déchets observé par mètre dans la catégorie d'utilisation des sols.",
         'de': "Die hervorgehobene Zelle ist der Maximalwert in der Zeile. Jede Zelle stellt den durchschnittlichen Müll "
-                "pro Meter in der Landnutzungskategorie dar."
+              "pro Meter in der Landnutzungskategorie dar."
     }
     
     caption = {
