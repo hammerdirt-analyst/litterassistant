@@ -63,6 +63,12 @@ feature_selection = {
 
 }
 
+code_selector_labels = {
+    'en': 'Select an object',
+    'fr': 'Sélectionnez un objet',
+    'de': 'Wählen Sie ein Objekt aus',
+}
+
 date_widget_labels = {
     'en': 'Select a start and end date',
     'fr': 'Selectionnez une date de début et de fin',
@@ -142,12 +148,18 @@ def main():
 
         # selecting an object of interest from the data
         # the menu selections come from the code descriptions
-        item_selection = st.selectbox("Select a code", display.code_selector(session_config.code_selections, language_choice),
+        # the code descriptions are in the display module
+        item_selection = st.selectbox(code_selector_labels[language_choice], display.code_selector(session_config.code_selections, language_choice),
                                       key="select_a_code")
+
+        # the original code is added to the parameters
         item_code = display.code_selector_to_code_label(item_selection, language_choice)
         report_parameters.update({"code": item_code})
+
+        # the label from the menu selector is kept in the parameters
         report_parameters.update({"selected objects": item_selection})
 
+        # configure the dates
         start, end = session_config.available_dates()
         start, end = pd.to_datetime(start), pd.to_datetime(end)
         report_date_range = st.date_input(date_widget_labels[language_choice],
@@ -168,6 +180,8 @@ def main():
             # 4. create the land use report
             # 5. create the map markers
 
+            # update the parameters
+            # the selected feature variable needs to be turned into the original column name
             if theme == 'parent_boundary':
                 selected_feature = session_config.survey_area_labels_inverse[language_choice][selected_feature]
 
@@ -178,7 +192,6 @@ def main():
 
             # 1 format date column
             data['date'] = pd.to_datetime(data['date'])
-
 
             # apply the requested parameters to the data
             report_data = session_config.apply_requested_parameters(data.copy(), report_parameters)
@@ -304,14 +317,14 @@ def main():
             m = folium.Map(
                 tiles=session_config.map_tiles['url'],
                 attr=session_config.map_tiles['html_attribution'],
-                location=[47.13, 7.25],
-                zoom_start=8,
+                location=[47.138, 7.246],
+                zoom_start=9,
                 min_zoom=7,
-                max_zoom=session_config.map_tiles['max_zoom'],
+                max_zoom=11,
                 width=700,
-                height=400)
-            a_popup = FoliumPopup("<div style='min-width:200px; word-break: keep-all;'><h4>Home of good "
-                                  "ideas</h4><p>Biel, Switzerland. The home of hammerdirt</p></div>",
+                height=500)
+            a_popup = FoliumPopup("<div style='min-width:200px; word-break: keep-all;'><h5>Home of good "
+                                  "ideas</h5><p>Biel, Switzerland. The home of hammerdirt</p></div>", parse_html=False,
                                   show=True)
             folium.Marker(
                 location=[47.138784974569866, 7.246126171339943],

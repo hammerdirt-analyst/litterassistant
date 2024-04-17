@@ -217,7 +217,7 @@ G67,plastic,Industrial sheeting,Utility items,G67,False,agriculture,"Bâche, feu
 G68,plastic,Fiberglass fragments,Fishing,G68,False,infrastructure,Fragments de fibre de verre,Fiberglas-Fragmente
 G69,plastic,Helmets or hardhats,Clothing,G69,False,infrastructure,Casques ou casques de sécurité,Helme oder Schutzhelme
 G7,plastic,Drink bottles < = 0.5L,Packaging,G7,True,food and drink,"Bouteilles à boisson < = 0,5L","Getränkeflaschen < = 0,5 l"
-G70,plastic,Shotgun cartridges,Hunting,G70,False,recreation,Cartouches de fusil de chasse,Schrotflintenpatronen
+G70,plastic,Plastic shotgun wadding,Hunting,G70,False,recreation,Bourre de cartouche en plastique,Plastik-Schrotladungspuffer
 G71,plastic,Shoes sandals,Clothing,G71,False,personal items,Chaussures sandales,Schuhe Sandalen
 G72,plastic,Traffic cones,Utility items,G72,False,infrastructure,Cônes de signalisation,Verkehrskegel
 G73,plastic,Foamed items & pieces (non packaging/insulation) foamed sponge material,Recreation,G73,False,recreation,Articles et pièces en mousse (pas d'emballage),Gegenstände aus Schaumstoff & Teilstücke (nicht Verpackung/Isolierung) schwammartige Gegenstände
