@@ -111,18 +111,42 @@ def main():
         
         # collect the column labels and search terms from input
         report_parameters = {}
-        theme = st.selectbox(theme_selection[language_choice], session_config.report_themes, index=0, key="select_theme")
+
+        # the theme is the column to slice the data
+        # the themes represent the first aggregation level
+        # in this example there are four valid themes, canton, city, river basin and lake
+        theme = st.selectbox(theme_selection[language_choice], session_config.report_themes_selection(language_choice), index=0, key="select_theme")
+        theme = session_config.report_theme_selection_to_label(theme, language_choice)
         report_parameters.update({"theme": theme})
-        feature = session_config.theme_selection_to_column_values[theme]
-        # if the feature is for Canton, City or River basin the column is feature_name:
-        if theme in ['Canton', 'Municipality', 'River basin']:
-            options = data[feature].unique()
-            select_a_feature = st.selectbox(feature_selection[language_choice], options, index=0, key="select_target_feature")
-        # if the selection is for a river, lake or park the column is feature_type
-        if theme in ['River', 'Lake', 'Park']:
-            options = data[data.feature_type == feature].feature_name.unique()
-            select_a_feature = st.selectbox(feature_selection[language_choice], options, index=None,
+        # the feature is the distinct object of interest in the column defined by <theme>
+        # the menu options depend on the value of theme. If the theme is canton or city the values
+        # can be taken directly from the data. They are part of the GPS data. If the theme is river basin
+        # then the options for the menu selection need to be configured
+        if theme in session_config.administrative[1:]:
+            # theme is a city or canton or river basin
+            if theme == 'parent_boundary':
+                options = session_config.survey_area_labels[language_choice].values()
+            else:
+                options = data[theme].unique()
+            selected_feature = st.selectbox(feature_selection[language_choice], options, index=0, key="select_target_feature")
+
+        if theme in session_config.feature_types:
+            # theme is lake or river or park
+            # the appropriate display for each item are in the display module
+            options = data[data.feature_type == theme].feature_name.unique()
+            f_names = display.f_names
+            options = {f_names.loc[x, 'display_feature_name']: x for x in options}
+
+            selected_feature = st.selectbox(feature_selection[language_choice], options.keys(), index=None,
                                             key="select_target_feature")
+
+        # selecting an object of interest from the data
+        # the menu selections come from the code descriptions
+        item_selection = st.selectbox("Select a code", display.code_selector(session_config.code_selections, language_choice),
+                                      key="select_a_code")
+        item_code = display.code_selector_to_code_label(item_selection, language_choice)
+        report_parameters.update({"code": item_code})
+        report_parameters.update({"selected objects": item_selection})
 
         start, end = session_config.available_dates()
         start, end = pd.to_datetime(start), pd.to_datetime(end)
@@ -143,15 +167,26 @@ def main():
             # 3. create the report sections
             # 4. create the land use report
             # 5. create the map markers
-            
-            report_parameters.update({"feature": select_a_feature})
+
+            if theme == 'parent_boundary':
+                selected_feature = session_config.survey_area_labels_inverse[language_choice][selected_feature]
+
+            if theme in session_config.feature_types:
+                selected_feature = options[selected_feature]
+            report_parameters.update({"feature": selected_feature})
             report_parameters.update({"start_date": report_date_range[0], "end_date": report_date_range[1]})
 
             # 1 format date column
             data['date'] = pd.to_datetime(data['date'])
 
+
             # apply the requested parameters to the data
             report_data = session_config.apply_requested_parameters(data.copy(), report_parameters)
+
+            # check for an empty data frame:
+            if report_data.empty:
+                st.write("No data for the selected parameters")
+                return
 
             # 2 create a report object with the data
             this_report = reports.AReport(dfc=report_data.copy())

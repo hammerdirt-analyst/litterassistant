@@ -24,6 +24,7 @@ code_material = codes[['code', 'material']].set_index('code')
 
 beaches = unpack_with_pandas((".", data_directory, session_config.geo_data))
 lat_lon = beaches[['slug', 'latitude', 'longitude']].set_index('slug')
+f_names = beaches[['feature_name', 'display_feature_name']].drop_duplicates().set_index('feature_name')
 
 # definitions for charts and tables
 land_use_map = {
@@ -401,6 +402,25 @@ def code_definitions(codes: pd.Series, session_language: str = 'en'):
     language_map = code_definitions_map[session_language]
     defined = codes.apply(lambda x: language_map.loc[x])
     return defined
+
+def code_selector(selections: [] = None, session_language: str = 'en'):
+    language_map = code_definitions_map[session_language]
+    descriptions = [language_map.loc[x] for x in selections[1:]]
+    all = {
+        'en': 'all',
+        'fr': 'tout',
+        'de': 'alle'
+    }
+
+    return [all[session_language], *descriptions]
+
+def code_selector_to_code_label(a_description: str, session_language: str = 'en'):
+    if a_description in ['all', 'tout', 'alle']:
+        return a_description
+    else:
+        language_map = code_definitions_map[session_language]
+        return language_map[language_map == a_description].index[0]
+
     
 
 def most_common(df, session_language: str = 'en'):
@@ -428,12 +448,14 @@ def most_common(df, session_language: str = 'en'):
     a = df.sort_values('quantity', ascending=False).head(10).code.unique()
     
     b = df[df['rate'] >= 0.5].code.unique()
-    data = df[df.code.isin([{*a, *b}])]
+    data = df[df.code.isin(list({*a, *b}))]
+    data = data.sort_values('quantity', ascending=False)
     mc_q = data.quantity.sum()
     pct_total = mc_q / df.quantity.sum()
+
     data = data[most_common_columns['en'].keys()].copy()
     data['code'] = code_definitions(data['code'], session_language)
-    data = data.sort_values('quantity', ascending=False)
+
     data.rename(columns=most_common_columns[session_language], inplace=True)
     data = data.style.set_table_styles(table_style).set_caption(caption[session_language]).format(**format_kwargs)
     
@@ -584,3 +606,23 @@ def define_folium_markers(m: folium.Map, marker_data: [] = None,  session_langua
         marker = Marker(location=[a_marker['latitude'], a_marker['longitude']], popup=popup)
         marker.add_to(marker_cluster)
     return m
+
+def buffer_pcs_m(m: folium.Map, marker_data: [] = None, df: pd.DataFrame = None, session_language: str = 'en'):
+    # """Buffer the pcs/m"""
+    # for a_marker in marker_data:
+    #
+    #     radius = a_marker['pcs/m']
+    #     folium.Circle(
+    #         location=[a_marker['latitude'], a_marker['longitude']],
+    #         radius=radius,
+    #         color="black",
+    #         weight=1,
+    #         fill_opacity=0.6,
+    #         opacity=1,
+    #         fill_color="green",
+    #         fill=False,
+    #         popup="{} meters".format(radius),
+    #         tooltip="I am in meters",
+    #     ).add_to(m)
+    # return m
+    pass

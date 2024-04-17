@@ -3,9 +3,6 @@ import numpy as np
 from pathlib import Path
 import pandas as pd
 import xyzservices.providers as xyz
-import os
-import json as js
-
 
 # data specific session variables
 columns = ['sample_id', 'location', 'date', 'feature_name', 'parent_boundary', 'city', 'canton', 'feature_type',
@@ -15,8 +12,48 @@ administrative = ['location', 'city', 'canton', 'parent_boundary']
 geographic = ['feature_name',  'feature_type']
 feature_types = ['r', 'l', 'p']
 feature_variables = ['orchards', 'vineyards', 'buildings', 'forest', 'undefined', 'public services', 'streets']
+the_report_themes = ['Canton', 'Municipality', 'River basin', 'River', 'Lake', 'Park']
 
-report_themes = ["Canton", "Municipality", "River basin", "River", "Lake", "Park"]
+def report_themes_selection(session_language: str):
+    report_themes = {
+        'de': ['Kanton', 'Gemeinde', 'Flusseinzugsgebiet', 'Fluss', 'See', 'Park'],
+        'en': ['Canton', 'Municipality', 'River basin', 'River', 'Lake', 'Park'],
+        'fr': ['Canton', 'Municipalité', 'Bassin versant', 'Rivière', 'Lac', 'Parc']
+    }
+    return report_themes[session_language]
+
+
+def report_theme_selection_to_label(theme, session_language: str):
+
+    selection_to_label = {
+        'de': {
+            'Kanton': 'canton',
+            'Gemeinde': 'city',
+            'Flusseinzugsgebiet': 'parent_boundary',
+            'Fluss': 'r',
+            'See': 'l',
+            'Park': 'p'
+        },
+        'en': {
+            'Canton': 'canton',
+            'Municipality': 'city',
+            'River basin': 'parent_boundary',
+            'River': 'r',
+            'Lake': 'l',
+            'Park': 'p'
+        },
+        'fr': {
+            'Canton': 'canton',
+            'Municipalité': 'city',
+            'Bassin versant': 'parent_boundary',
+            'Rivière': 'r',
+            'Lac': 'l',
+            'Parc': 'p'
+        }
+    }
+    return selection_to_label[session_language][theme]
+
+
 # languages
 languages = ['de', 'en', 'fr']
 
@@ -58,7 +95,7 @@ y_type = 'float'
 Q = 'quantity'
 
 # distribution point estimate
-tendencies = 'median'
+tendencies = 'mean'
 
 # this column is used to key feature variables to 'Y'
 location_label = "location"
@@ -115,6 +152,8 @@ agg_groups = {
 code_definitions_c = "codes.csv"
 location_description = "locations.csv"
 geo_data = "beaches.csv"
+
+code_selections = ["all", "G70", "G27", "G112", "G30"]
 
 def available_dates():
     start = "2015-11-15"
@@ -200,6 +239,55 @@ theme_selection_to_column_values = {
 
 }
 
+survey_area_labels = {
+        'en': {
+            "linth": "Linth",
+            "rhone": "Rhone",
+            "aare": "Aare",
+            "ticino": "Ticino",
+            "rhine": "Rhine",
+        },
+        'de': {
+            "linth": "Linth",
+            "rhone": "Rhone",
+            "aare": "Aare",
+            "ticino": "Tessin",
+            "rhine": "Rhein",
+        },
+        'fr': {
+            "linth": "Linth",
+            "rhone": "Rhône",
+            "aare": "Aar",
+            "ticino": "Tessin",
+            "rhine": "Rhin",
+        }
+}
+
+survey_area_labels_inverse = {
+    'en': {
+        "Linth": "linth",
+        "Rhone": "rhone",
+        "Aare": "aare",
+        "Ticino": "ticino",
+        "Rhine": "rhine",
+    },
+    'de': {
+        "Linth": "linth",
+        "Rhone": "rhone",
+        "Aare": "aare",
+        "Tessin": "ticino",
+        "Rhein": "rhine",
+    },
+    'fr': {
+        "Linth": "linth",
+        "Rhône": "rhone",
+        "Aar": "aare",
+        "Tessin": "ticino",
+        "Rhin": "rhine",
+    }
+}
+
+
 swiss_topo = xyz.SwissFederalGeoportal
 
 map_tiles = swiss_topo['NationalMapColor']
@@ -237,17 +325,24 @@ def confirm_configuration(parameters: dict, session_language: str):
 
 def apply_requested_parameters(df, parameters: dict):
 
+    if parameters['code'] not in ['all', 'tout', 'alle']:
+        df = df[df['code'] == parameters['code']]
     theme = parameters['theme']
-    feature = theme_selection_to_column_values[theme]
-    if theme in ["Lake", "River", "Park"]:
-        df = df[df.feature_type == feature]
+    print(theme)
+    if theme in feature_types:
+        print('theme in feature types')
+        print(df.feature_type.unique())
+        print(parameters['feature'])
+        df = df[df.feature_type == theme]
         df = df[df.feature_name == parameters['feature']]
     else:
-        df = df[df[feature] == parameters['feature']]
+        print("theme not in feature types")
+        print(df[theme].unique())
+        print(parameters['feature'])
+        df = df[df[theme] == parameters['feature']]
 
     df['date'] = pd.to_datetime(df['date'])
     df['date'] = df['date'].dt.date
-
     mask = make_date_mask(df, parameters['start_date'], parameters['end_date'])
     return df[mask]
 
