@@ -98,6 +98,10 @@ def the_most_common_title(an_int: int = 0, session_language: str = 'en'):
     }
     return f'{the_title} {ending[session_language]}'
 
+
+
+st.set_page_config(page_title="Litter Density Report", page_icon=":recycle:", layout="centered")
+
 def main():
 
     """Reporting litter density"""
