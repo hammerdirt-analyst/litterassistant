@@ -214,7 +214,7 @@ odd_rows = {'selector': 'tr:nth-child(odd)', 'props': 'background: #FFF;'}
 table_font = {'selector': 'tr', 'props': 'font-size: 10px;'}
 table_data = {'selector': 'td', 'props': 'padding:4px; font-size:12px;text-align: center;'}
 table_caption = {'selector': 'caption', 'props': 'caption-side: bottom; font-size:1em; text-align: left;'}
-table_caption_top = {'selector': 'caption', 'props': 'caption-side: top; font-size:1em; text-align: left;'}
+table_caption_top = {'selector': 'caption', 'props': 'caption-side: top; font-size:1em; text-align: left; margin-bottom: 10px;'}
 caption_css = {'selector': 'caption', 'props': 'caption-side: top; font-size:.9em; text-align: left; font-style: italic; color: #000;'}
 table_first_column_left = {'selector': 'td:nth-child(1)', 'props': 'text-align: left;'}
 table_css_styles = [even_rows, odd_rows, table_font, header_row, table_data, table_caption]
@@ -555,7 +555,7 @@ def map_markers(df, lat_lon: pd.DataFrame = lat_lon):
     """Map the markers"""
     nsamples = df.groupby('location', observed=True)['sample_id'].nunique()
     qty_location = df.groupby('location', observed=True)['quantity'].sum()
-    rate_location = round(df.groupby('location', observed=True)['pcs/m'].mean(), 2)
+    rate_location = df.groupby('location', observed=True)['pcs/m'].mean().round(2)
     last_sample = df.groupby('location', observed=True)['date'].max()
     df = pd.concat([nsamples, qty_location, rate_location, last_sample], axis=1)
     df = df.merge(lat_lon, left_index=True, right_index=True)
@@ -592,8 +592,9 @@ def map_pop_up_markers(a_marker, session_language: str = 'en'):
     loc_list = f'<li>{language_labels[session_language]["location"]} : {a_marker["location"]}</li>'
     n_samples = f'<li>{language_labels[session_language]["sample_id"]} : {a_marker["sample_id"]}</li>'
     quantity = f'<li>{language_labels[session_language]["quantity"]} : {"{:,}".format(a_marker["quantity"])}</li>'
+    pcs_meter = f'<li>{language_labels[session_language]["pcs/m"]} : {a_marker["pcs/m"]}</li>'
     
-    return f"<div style='min-width:300px; word-break: keep-all;'><ul>{loc_list}{n_samples}{quantity}</ul></div>"
+    return f"<div style='min-width:300px; word-break: keep-all;'><ul>{loc_list}{n_samples}{quantity}{pcs_meter}</ul></div>"
 
 
 def define_folium_markers(m: folium.Map, marker_data: [] = None,  session_language: str = 'en'):
@@ -606,6 +607,66 @@ def define_folium_markers(m: folium.Map, marker_data: [] = None,  session_langua
         marker = Marker(location=[a_marker['latitude'], a_marker['longitude']], popup=popup)
         marker.add_to(marker_cluster)
     return m
+
+def object_summary(df, session_language: str = 'en'):
+    """Display the object summary"""
+    explain = {
+        'en': "The inventory details the total quantity, average pcs/m, % of total and fail rate for each object identified "
+              "in the report.",
+        'fr': "L'inventaire détaille la quantité totale, la moyenne des pcs/m, le % du total et le taux d'échec pour chaque "
+                "objet identifié dans le rapport.",
+        'de': "Das Inventar enthält die Gesamtmenge, den durchschnittlichen Stückpreis, den Prozentsatz des Gesamtwerts "
+                "und die Ausfallrate für jedes im Bericht identifizierte Objekt."
+    }
+
+    caption = {
+        'en': f"<b>The inventory.</b> {explain['en']}",
+        'fr': f"<b>L'inventaire</b> {explain['fr']}",
+        'de': f"<b>Das Inventar</b> {explain['de']}"
+    }
+
+    a_new_index = [code_definitions_map[session_language].loc[x] for x in df.code]
+    table_style = [*table_css_styles[:-1], table_caption_top, caption_css, table_first_column_left]
+
+    df["% of total"] = df["% of total"].map(lambda x: '{:.0%}'.format(x))
+
+    df["rate"] = df["rate"].map(lambda x: '{:.0%}'.format(x))
+    df['code'] = a_new_index
+    df = df[['code', 'quantity', 'pcs/m', '% of total', 'rate']]
+    df = df.sort_values('quantity', ascending=False)
+    df.rename(columns=most_common_columns[session_language], inplace=True)
+    f = df.style.set_table_styles(table_style).format(**format_kwargs)
+    f = f.set_caption(caption[session_language])
+
+
+    return f.hide(axis=0)
+
+def landuse_catalog(df, session_language: str = 'en'):
+    """Display the land use catalog"""
+    explain = {
+        'en': "The land use catalog details the magnitude of land each land use category for each location, was well as "
+              "the average pcs/m for the location",
+        'fr': "Le catalogue d'utilisation des terres détaille la quantité de terre de chaque catégorie d'utilisation des "
+              "terres pour chaque emplacement, ainsi que la moyenne des pcs/m pour l'emplacement.",
+        'de': "Der Landnutzungskatalog gibt die Größe des Landes für jede Landnutzungskategorie für jeden Standort an, "
+              "sowie den durchschnittlichen Stückpreis für den Standort."
+    }
+
+    caption = {
+        'en': f"<b>The land use catalog.</b> {explain['en']}",
+        'fr': f"<b>Le catalogue d'utilisation des terres.</b> {explain['fr']}",
+        'de': f"<b>Der Landnutzungskatalog.</b> {explain['de']}"
+    }
+
+    table_style = [*table_css_styles[:-1], table_caption_top, caption_css, table_first_column_left]
+
+    df = df.sort_values('pcs/m', ascending=False)
+    df.rename(columns=land_use_map[session_language], inplace=True)
+    f = df.style.set_table_styles(table_style).format(**format_kwargs)
+    f = f.set_caption(caption[session_language])
+
+    return f.hide(axis=0)
+
 
 def buffer_pcs_m(m: folium.Map, marker_data: [] = None, df: pd.DataFrame = None, session_language: str = 'en'):
     # """Buffer the pcs/m"""

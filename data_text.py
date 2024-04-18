@@ -15,11 +15,10 @@ data_tab_en3 = "In this report the different fragmented plastics, foams and plas
                    "object-codes: G21, G23, G24\n"
 data_tab_en4 = "Combining objects into lager groups is a common practice in the field of waste management. " \
                "It is a way to make the data more interpretable. For example a common group is called SUP for " \
-               "single-use-plastics. This group would include all the objects that are used once and then discarded. " \
-               "We have not received any specific requests for this type of grouping. Therfore, in this initial version the " \
-               "only object groups are as defined. You can request a group on the discord server ([discord](" \
-               "https://discord.com/)) or if you want to contribute to the code base raise an issue ([Repo]" \
-               "(https://github.com/hammerdirt-analyst/feb_2024))"
+               "single-use-plastics. In this initial version the only object groups are as defined or those which are "\
+               "selected by the user. You can request a group on the discord server ([discord](https://discord.com/)) "\
+               "or if you want to contribute to the code base raise an issue ([Repo](https://github.com/hammerdirt-analyst/feb_2024))"
+
 
 data_tab_fr1 = "Les objets les plus courants dans un rapport ont été sélectionnés en utilisant deux critères :\n\n* Quantité, c'est-à-dire les dix objets les plus abondants.\n* Le taux d'échec : La chance qu'au moins un des types d'objet soit trouvé dans un échantillon."
 
@@ -27,10 +26,12 @@ data_tab_fr2 = "Un enquêteur est susceptible de rencontrer des objets courants 
 
 data_tab_fr3 = "Dans ce rapport, les différents plastiques fragmentés, les mousses et les bouchons de bouteilles en plastique ont été regroupés en groupes composites. L'opération est résumée comme suit :\n\n* __Gfoam :__ Polystyrène expansé fragmenté, codes d'objet : G81, G82, G83\n* __Gfrags :__ Plastiques fragmentés, codes d'objet : G78, G79, G80, G75, G76, G77\n* __Gcaps :__ Couvercles de bouteilles en plastique et anneaux de couvercles, codes d'objet : G21, G23, G24\n"
 
-data_tab_fr4 = "La combinaison d'objets en groupes plus larges est une pratique courante dans le domaine de la " \
-               "gestion des déchets. C'est un moyen de rendre les données plus interprétables. Par exemple, un groupe commun est appelé SUP pour plastiques à usage unique. Ce groupe inclurait tous les objets qui sont utilisés une fois puis jetés. Nous n'avons reçu aucune demande spécifique pour ce type de regroupement. Par conséquent, dans cette version initiale, les seuls groupes d'objets sont tels que définis. Vous pouvez demander un groupe sur le serveur Discord ([discord](" \
-               "https://discord.com/)), si vous souhaitez contribuer à la base de code soulever un problème ([Repo]" \
-               "(https://github.com/hammerdirt-analyst/feb_2024))"
+data_tab_fr4 = "La combinaison d'objets en grands groupes est une pratique courante dans le domaine de la gestion des déchets. " \
+               "C'est un moyen de rendre les données plus interprétables. Par exemple, un groupe courant est appelé SUP pour " \
+               "plastiques à usage unique. Dans cette version initiale, les seuls groupes d'objets sont ceux définis ou ceux qui sont " \
+               "sélectionnés par l'utilisateur. Vous pouvez demander un groupe sur le serveur Discord ([discord](https://discord.com/)) " \
+               "ou si vous souhaitez contribuer à la base de code, soulevez un problème ([Repo](https://github.com/hammerdirt-analyst/feb_2024))"
+
 
 data_tab_de1 = "Die häufigsten Objekte in einem Bericht wurden anhand von zwei Kriterien ausgewählt:\n\n* Menge, d.h. die zehn häufigsten Objekte.\n* Die Ausfallrate: Die Wahrscheinlichkeit, dass mindestens ein Objekttyp in einer Stichprobe gefunden wird."
 
@@ -38,10 +39,12 @@ data_tab_de2 = "Ein Vermesser wird wahrscheinlich auf gängige Objekte in versch
 
 data_tab_de3 = "In diesem Bericht wurden die verschiedenen fragmentierten Kunststoffe, Schaumstoffe und Plastikflaschendeckel zu zusammengesetzten Gruppen zusammengefasst. Die Operation wird entsprechend zusammengefasst:\n\n* __Gfoam :__ Fragmentierter expandierter Polystyrolschaum, Objektcodes: G81, G82, G83\n* __Gfrags :__ Fragmentierte Kunststoffe, Objektcodes: G78, G79, G80, G75, G76, G77\n* __Gcaps :__ Kunststoffflaschendeckel und Deckelringe, Objektcodes: G21, G23, G24\n"
 
-data_tab_de4 = "Die Kombination von Objekten in größere Gruppen ist eine gängige Praxis im Bereich des " \
-               "Abfallmanagements. Es ist eine Möglichkeit, die Daten besser interpretierbar zu machen. Zum Beispiel wird eine gemeinsame Gruppe als SUP für Einwegkunststoffe bezeichnet. Diese Gruppe würde alle Objekte umfassen, die einmal verwendet und dann weggeworfen werden. Wir haben keine spezifischen Anfragen für diese Art von Gruppierung erhalten. Daher sind in dieser ersten Version die einzigen Objektgruppen wie definiert. Sie können eine Gruppe auf dem Discord-Server anfragen ([discord](" \
-               "https://discord.com/)) wenn Sie zur Codebasis beitragen möchten, ein Problem melden ([Repo]" \
-               "(https://github.com/hammerdirt-analyst/feb_2024))"
+data_tab_de4 = "Das Kombinieren von Objekten zu größeren Gruppen ist eine gängige Praxis im Bereich der Abfallwirtschaft. " \
+               "Es ist eine Möglichkeit, die Daten besser interpretierbar zu machen. Ein häufiger Gruppenname ist z.B. SUP für " \
+               "Einwegplastik. In dieser ersten Version sind die einzigen Objektgruppen die definierten oder diejenigen, die " \
+               "vom Benutzer ausgewählt werden. Sie können eine Gruppe auf dem Discord-Server anfordern ([discord](https://discord.com/)) " \
+               "oder wenn Sie zur Codebasis beitragen möchten, ein Problem melden ([Repo](https://github.com/hammerdirt-analyst/feb_2024))"
+
 
 tab_en = [data_tab_en1, data_tab_en2, data_tab_en3, data_tab_en4]
 tab_fr = [data_tab_fr1, data_tab_fr2, data_tab_fr3, data_tab_fr4]

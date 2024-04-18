@@ -89,6 +89,13 @@ submitt_labels = {
     'de': 'Bericht erstellen'
 }
 
+invetory_labels = {
+    'en': 'Object inventory',
+    'fr': 'Inventaire des objets',
+    'de': 'Objektinventar'
+
+}
+
 def the_most_common_title(an_int: int = 0, session_language: str = 'en'):
     the_title = f'__{the_most_common_label[session_language]} :__ _{an_int}'
     ending = {
@@ -305,6 +312,14 @@ def main():
                 st.markdown('<br />', unsafe_allow_html=True)
                 st.markdown(data_tab_context[2])
                 st.markdown(data_tab_context[3])
+
+        inventory_header = invetory_labels[language_choice]
+        st.markdown(f'__{inventory_header}__')
+
+        if submitted:
+            report_inventory = this_report.object_summary()
+            report_inventory = display.object_summary(report_inventory, language_choice)
+            st.write(report_inventory.to_html(escape=False), unsafe_allow_html=True)
             
     with land_use_tab:
         land_use_tab_context = land_use_tab_content[language_choice]
@@ -341,7 +356,6 @@ def main():
             
         st_folium(m, width=725, height=400, returned_objects=[])
         
-        
         if submitted:
             
             profile_tab, correlation_tab = st.tabs([profile_of_survey_locations[language_choice],
@@ -377,9 +391,21 @@ def main():
                 st.write(displayed_rate.to_html(escape=False), unsafe_allow_html=True)
                 st.markdown("<br />", unsafe_allow_html=True)
                 st.markdown(land_use_tab_context[4])
+
+        if submitted:
+            locs_and_lu = lur_report.df_cat.copy()
+            d_loc_lu = locs_and_lu.groupby(['location', 'orchards', 'vineyards', 'buildings', 'forest', 'undefined', 'public services' ], observed=True, as_index=False)['pcs/m'].mean()
+            d_loc_lu[['orchards', 'vineyards', 'buildings', 'forest', 'undefined', 'public services']] = d_loc_lu[['orchards', 'vineyards', 'buildings', 'forest', 'undefined', 'public services']].astype(int)
+            display_luse = display.landuse_catalog(d_loc_lu, language_choice)
+
+            st.write(display_luse.to_html(escape=False), unsafe_allow_html=True)
                 
     with predictions_tab:
         st.write("Predictions tab")
+
+    st.markdown("<br />", unsafe_allow_html=True)
+
+
 
 
 
