@@ -2,7 +2,7 @@ import pandas
 import pandas as pd
 import numpy as np
 
-
+import geospatial
 from session_config import administrative, feature_variables, feature_types, columns
 from session_config import object_of_interest
 from session_config import index_label, location_label, Y, Q
@@ -159,5 +159,9 @@ class AReport:
     
     def sampling_conditions(self):
         """Returns the land use profile of the data"""
-        return self.df[[location_label, *feature_variables]].drop_duplicates(location_label)
+
+        locations = self.df[location_label].unique()
+
+        topo_data = geospatial.collect_topo_data(locations=locations)
+        return topo_data
 

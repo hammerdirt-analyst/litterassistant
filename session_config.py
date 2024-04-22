@@ -107,7 +107,7 @@ index_label = "sample_id"
 data_directory = 'data'
 
 # file
-survey_data = "lakes.csv"
+survey_data = "new_allx.csv"
 
 date_format = "%Y-%m-%d"
 
@@ -165,7 +165,22 @@ def available_dates():
 #     return df[column].isin(labels)
 
 def make_date_mask(df, start, end):
-    return (df['date'] >= start) & (df['date'] <= end)
+    # Convert the 'date' column to pandas datetime format (datetime64[ns])
+    df['date'] = pd.to_datetime(df['date'])
+
+    # print("Type of 'date' column after conversion:", type(df['date'].values[0]))
+
+    # convert 'start' and 'end' to the same datetime format
+    start = pd.to_datetime(start)
+    end = pd.to_datetime(end)
+
+    # print("Start date type:", type(start))
+    # print("End date type:", type(end))
+
+    # Create the mask: True if the date is within the start and end range (inclusive)
+    mask = (df['date'] >= start) & (df['date'] <= end)
+
+    return mask
 
 
 def unpack_with_numpy(path_variables: tuple) -> np.ndarray:
@@ -304,7 +319,7 @@ folium_map_kwargs = dict(
     min_lat=0,
     min_lon=0,
     width=700,
-    height=400)
+    height=500)
 
 # links
 iqaasl = "https://hammerdirt-analyst.github.io/IQAASL-End-0f-Sampling-2021/land_use_correlation.html"
@@ -330,19 +345,20 @@ def apply_requested_parameters(df, parameters: dict):
     theme = parameters['theme']
     print(theme)
     if theme in feature_types:
-        print('theme in feature types')
-        print(df.feature_type.unique())
-        print(parameters['feature'])
+        # print('theme in feature types')
+        # print(df.feature_type.unique())
+        # print(parameters['feature'])
         df = df[df.feature_type == theme]
         df = df[df.feature_name == parameters['feature']]
     else:
-        print("theme not in feature types")
-        print(df[theme].unique())
-        print(parameters['feature'])
+        # print("theme not in feature types")
+        # print(df[theme].unique())
+        # print(parameters['feature'])
         df = df[df[theme] == parameters['feature']]
 
     df['date'] = pd.to_datetime(df['date'])
     df['date'] = df['date'].dt.date
+    # print(df['date'].dtype)
     mask = make_date_mask(df, parameters['start_date'], parameters['end_date'])
     return df[mask]
 

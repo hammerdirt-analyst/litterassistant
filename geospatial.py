@@ -8,6 +8,11 @@ from session_config import index_label, location_label, Y, Q
 from session_config import agg_groups
 
 
+landuse = pd.read_csv('data/land_use.csv')
+landcover = pd.read_csv('data/land_cover.csv')
+streets = pd.read_csv('data/streets.csv')
+river_intersects = pd.read_csv('data/river_intersect_lakes.csv')
+
 
 
 words_land_use_profile = {
@@ -31,13 +36,20 @@ column_labels_land_use = {
 }
 
 
-def select_x_and_y(df_target, df_feature, Y: str = Y, Q: str = Q):
+def select_x_and_y(df_target, features, x_value: str = 'scale'):
     """Selects the feature columns and the target column from the DataFrame"""
-    parameters = dict(left_on=location_label, right_on=location_label, validate='many_to_one')
-    new_df = df_target[[location_label, index_label, Y, Q]].merge(df_feature, **parameters)
 
-    return new_df
+    for label in ['public services', 'streets']:
+        df_target[label] = df_target.location.apply(lambda x: features[label].loc[x, x_value])
 
+    for label in ['landcover']:
+        df = df_target.merge(features[label], left_on=location_label, right_on=location_label, how='left')
+    for label in ['river_intersects']:
+        if len(features[label]) == 0:
+            return df
+        else:
+            df_rivers = df_target.merge(features[label], left_on=location_label, right_on=location_label, how='left')
+            return df, df_rivers
 
 def categorize_features(df, feature_columns=feature_variables):
     """Categorizes the feature columns in the DataFrame"""
@@ -57,6 +69,40 @@ def scale_combined(df, column_to_scale, new_column_name):
     scaler = MinMaxScaler()
     df[new_column_name] = scaler.fit_transform(df[[column_to_scale]])
     return df
+
+
+def collect_topo_data(locations: [] = None, labels: {} = None):
+    """Collects the topographical data"""
+
+    d_t_c = {
+        'public services': landuse.rename(columns={'slug': location_label}),
+        'landcover': landcover.rename(columns={'slug': location_label}),
+        'streets': streets.rename(columns={'slug': location_label}),
+        'river_intersects': river_intersects.rename(columns={'slug': location_label})
+    }
+
+    if labels is None:
+        if locations is None:
+            return d_t_c
+        else:
+            strts = d_t_c['streets'].copy()
+            strts = strts.groupby(location_label)[['length']].sum().reset_index()
+            strts = scale_combined(strts, 'length', 'scale')
+            strts.set_index(location_label, inplace=True, drop=True)
+
+            ps = d_t_c['public services'].copy()
+            ps = ps.groupby(location_label).agg({'scale': 'sum', 'area': 'sum'})
+
+            lc = d_t_c['landcover'].copy()
+            lc = lc.pivot(index=location_label, columns='attribute', values='scale').reset_index()
+            new_columns = {'Siedl': 'buildings', 'Wald': 'forest', 'Reben': 'vineyards', 'Obstanlage': 'orchards'}
+            lc.rename(columns=new_columns, inplace=True)
+
+            d_t_c.update({'streets': strts, 'public services': ps, 'landcover': lc})
+
+            return d_t_c
+    else:
+        return labels
     
 
 def unscale_land_use(df, feature_columns=feature_variables):
@@ -133,26 +179,28 @@ def the_land_use_profile(df, feature_columns: [] = session_config.feature_variab
     column_index = make_multi_index(column_labels_land_use, words_land_use_profile, len(df), session_language)
     d.columns = column_index
     
-    return d.drop('streets', axis=0)
+    return d
 
 
 def the_litter_rate_per_land_use(df, feature_columns: [] = session_config.feature_variables,
                                  session_language: str = 'en'):
     """Creates a profile of the litter rate per land use data"""
     
-    d = df[feature_columns].copy()
-    d = d.T
-    column_index = make_multi_index(column_labels_land_use, words_land_use_litter_rates, len(df), session_language)
-    d.columns = column_index
+    # d = df[feature_columns].copy()
+    # d = d.T
+    # column_index = make_multi_index(column_labels_land_use, words_land_use_litter_rates, len(df), session_language)
+    # d.columns = column_index
+    # column_index = make_multi_index(column_labels_land_use, words_land_use_profile, len(df), session_language)
+    # df.columns = column_index
     
-    return d.drop('streets', axis=0)
+    return df
 
 
 class ALandUseObject:
 
-    def __init__(self, df, feature, object_of_interest, Y):
-        self.df = df[[index_label, location_label, object_of_interest, feature, Y, Q]]
-        self.feature = feature
+    def __init__(self, locations, df_feature):
+        self.locations = locations
+        self.feature_df = df_feature
 
     def n_samples(self):
         return self.df[index_label].nunique()
@@ -185,16 +233,26 @@ class ALandUseObject:
 
 class LandUseReport:
 
-    def __init__(self, df_target, df_feature):
-        self.df_cont = select_x_and_y(df_target, df_feature)
+    def __init__(self, df_target, features):
+        self.target = df_target
+        self.features = features
+        self.feature_variables = list(self.features.keys())
+        self.intersects = None
         self.df_cat = None
-        self.feature_variables = None
+        self.merge_land_use_to_survey_data()
+
+    def merge_land_use_to_survey_data(self):
+        lu = select_x_and_y(self.target, self.features)
+        if len(lu) == 2:
+            self.df_cont, self.intersects = lu
+        else:
+            self.df_cont = lu
         
     def categorize_columns(self, df, feature_columns=feature_variables):
         return categorize_features(df, feature_columns=feature_columns)
 
     def n_samples_per_feature(self):
-        df_feature = {feature: self.df_cat.groupby(feature, observed=True)[index_label].nunique() for feature in
+        df_feature = {feature: self.df_cat[feature].value_counts() for feature in
                       self.feature_variables}
         df_concat = pd.concat(df_feature, axis=1)
         return df_concat.fillna(0).astype('int')
@@ -213,16 +271,18 @@ class LandUseReport:
 
     def rate_per_feature(self, afunc: str = session_config.tendencies):
 
-        feature_dfs = []
-        for feature in self.feature_variables:
-            df_x = self.df_cat[[index_label, feature, Y]]
-            df_feature = df_x.groupby(feature, observed=True).agg({Y: afunc})
-            df_feature.rename(columns={Y: feature}, inplace=True)
-            feature_dfs.append(df_feature)
-        df_concat = pd.concat(feature_dfs, axis=1)
-        df_concat.columns = self.feature_variables
+        avg_matrix = pd.DataFrame(index=self.feature_variables, columns=session_config.bin_labels)
 
-        return df_concat.fillna(0).round(2)
+        df = self.df_cat.copy()
+
+        # Calculate the mean for each category in each identified column
+        for column in self.feature_variables:
+            for category in session_config.bin_labels:
+                # Filter df by category and calculate mean for the target variable, only if it's relevant
+                filtered = df[df[column] == category]
+                avg_matrix.at[column, category] = filtered[Y].mean() if not filtered.empty else 0
+
+        return avg_matrix.round(2)
     
     def combine_features(self, columns_to_combine: list = session_config.default_args):
         
@@ -263,10 +323,6 @@ class LandUseReport:
         c_p = find_correlated_values(d, threshold=threshold)
         
         return self.assign_combination_method(c_p)
-    
-    
-    
-   
     
     def report_by_feature(self, feature):
 

@@ -390,10 +390,10 @@ def scatter_plot(x, y, figure_kwargs: dict = default_chart_args, session_languag
     elif categorical:
         
         a_cmap = factor_cmap('city', palette='Category10_3', factors=data.city.unique()),
-        glyph = Scatter(x='date', y='pcs/m', size=10, marker='x')
+        glyph = Scatter(x='', y='pcs/m', size=12, marker='x')
         p.add(data, glyph)
     else:
-        p.x(x, y, legend_label='Trend', line_width=2, size=10)
+        p.x(x, y, legend_label='Sample total', fill_color='dodgerblue', line_width=1, size=12)
     return p
 
 
@@ -492,7 +492,7 @@ def display_columns_to_combine(columns_to_combine: list, session_language: str =
 
 
 def highlight_max(s, props: str = highlight_props):
-    return np.where(s == np.max(s.values), props, '')
+    return np.where((s == np.max(s.values)) & (s != 0), props, '')
 
 
 def landuse_profile(aprofile: pd.DataFrame, session_language: str = 'en', nsamples: int = 0):
@@ -542,9 +542,18 @@ def litter_rates_per_feature(aresult: pd.DataFrame, session_language: str = 'en'
         'fr': f"<b>Le profil d'utilisation des sols et les taux moyens de déchets observés par fonction.</b> {explain['fr']}",
         'de': f"<b>Das Landnutzungsprofil und die beobachteten durchschnittlichen Müllraten pro Funktion.</b> {explain['de']}"
     }
+    column_labels_land_use = {
+        1: '0 - 20%',
+        2: '20 - 40%',
+        3: '40 - 60%',
+        4: '60 - 80%',
+        5: '80 - 100%'
+    }
 
-    a_new_index = [land_use_map[session_language][x] for x in aresult.index]
-    f = aresult.style.set_table_styles([table_caption_top, caption_css]).format('{:.2f}')
+    d = aresult.loc[session_config.feature_variables].copy()
+    d.rename(columns=column_labels_land_use, inplace=True)
+    a_new_index = [land_use_map[session_language][x] for x in d.index]
+    f = d.style.set_table_styles([table_caption_top, caption_css]).format('{:.2f}')
     f = f.set_caption(caption[session_language])
     f = f.apply(highlight_max, axis=1)
     f.data = f.data.set_index(pd.Index(a_new_index))
@@ -661,8 +670,13 @@ def landuse_catalog(df, session_language: str = 'en'):
     table_style = [*table_css_styles[:-1], table_caption_top, caption_css, table_first_column_left]
 
     df = df.sort_values('pcs/m', ascending=False)
+    df['pcs/m'] = df['pcs/m'].round(2)
     df.rename(columns=land_use_map[session_language], inplace=True)
-    f = df.style.set_table_styles(table_style).format(**format_kwargs)
+    f = df.style.set_table_styles(table_style)
+    f.applymap(lambda x: 'color: #E5E5E5' if pd.isnull(x) else '')
+    f.applymap(lambda x: 'background: #E5E5E5' if pd.isnull(x) else '')
+    # f.format({**format_kwargs})
+
     f = f.set_caption(caption[session_language])
 
     return f.hide(axis=0)

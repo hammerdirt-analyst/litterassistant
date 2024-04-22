@@ -229,7 +229,7 @@ def main():
             scatter_chart = scatter_plot(samp_results['date'], samp_results['pcs/m'],
                                          data=samp_results, categorical=False,
                                          session_language=language_choice,
-                                         gradient=True)
+                                         gradient=False)
             
             # 4 create the components for the land use report
             target_df = this_report.sample_results()
@@ -318,6 +318,7 @@ def main():
 
         if submitted:
             report_inventory = this_report.object_summary()
+            report_inventory = report_inventory[report_inventory['quantity'] > 0]
             report_inventory = display.object_summary(report_inventory, language_choice)
             st.write(report_inventory.to_html(escape=False), unsafe_allow_html=True)
             
@@ -341,7 +342,7 @@ def main():
                 min_zoom=7,
                 max_zoom=11,
                 width=700,
-                height=500)
+                height=600)
             a_popup = FoliumPopup("<div style='min-width:200px; word-break: keep-all;'><h5>Home of good "
                                   "ideas</h5><p>Biel, Switzerland. The home of hammerdirt</p></div>", parse_html=False,
                                   show=True)
@@ -389,16 +390,23 @@ def main():
                 
                 displayed_rate = display.litter_rates_per_feature(rated, session_language=language_choice)
                 st.write(displayed_rate.to_html(escape=False), unsafe_allow_html=True)
+
                 st.markdown("<br />", unsafe_allow_html=True)
                 st.markdown(land_use_tab_context[4])
 
         if submitted:
             locs_and_lu = lur_report.df_cat.copy()
-            d_loc_lu = locs_and_lu.groupby(['location', 'orchards', 'vineyards', 'buildings', 'forest', 'undefined', 'public services' ], observed=True, as_index=False)['pcs/m'].mean()
-            d_loc_lu[['orchards', 'vineyards', 'buildings', 'forest', 'undefined', 'public services']] = d_loc_lu[['orchards', 'vineyards', 'buildings', 'forest', 'undefined', 'public services']].astype(int)
-            display_luse = display.landuse_catalog(d_loc_lu, language_choice)
+            d_loc_mean = locs_and_lu.groupby('location', observed=True, as_index=False)['pcs/m'].mean()
+            # d_loc_mean.rename(columns={'mean': 'pcs/m'}, inplace=True)
+            feature_cols = ['location', 'orchards', 'vineyards', 'buildings', 'forest', 'undefined', 'public services']
+            d_loc_lu = locs_and_lu.drop_duplicates(feature_cols)
 
-            st.write(display_luse.to_html(escape=False), unsafe_allow_html=True)
+            d_loc_lu = d_loc_lu[feature_cols].merge(d_loc_mean[['location', 'pcs/m']], on='location', how='left')
+            # d_loc_lu[feature_cols[1:]] = d_loc_lu[feature_cols[1:]].astype(int)
+            display_luse = display.landuse_catalog(d_loc_lu, language_choice)
+            #st.dataframe(d_loc_lu)
+
+            st.write(display_luse.to_html(escape=True), unsafe_allow_html=True)
                 
     with predictions_tab:
         st.write("Predictions tab")
