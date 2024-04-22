@@ -3,6 +3,7 @@ from folium import Marker
 from folium.plugins import MarkerCluster
 import pandas as pd
 
+import geospatial
 import session_config
 from session_config import session_language
 import datetime as dt
@@ -542,13 +543,7 @@ def litter_rates_per_feature(aresult: pd.DataFrame, session_language: str = 'en'
         'fr': f"<b>Le profil d'utilisation des sols et les taux moyens de déchets observés par fonction.</b> {explain['fr']}",
         'de': f"<b>Das Landnutzungsprofil und die beobachteten durchschnittlichen Müllraten pro Funktion.</b> {explain['de']}"
     }
-    column_labels_land_use = {
-        1: '0 - 20%',
-        2: '20 - 40%',
-        3: '40 - 60%',
-        4: '60 - 80%',
-        5: '80 - 100%'
-    }
+    column_labels_land_use = geospatial.column_labels_land_use
 
     d = aresult.loc[session_config.feature_variables].copy()
     d.rename(columns=column_labels_land_use, inplace=True)
@@ -673,9 +668,9 @@ def landuse_catalog(df, session_language: str = 'en'):
     df['pcs/m'] = df['pcs/m'].round(2)
     df.rename(columns=land_use_map[session_language], inplace=True)
     f = df.style.set_table_styles(table_style)
-    f.applymap(lambda x: 'color: #E5E5E5' if pd.isnull(x) else '')
-    f.applymap(lambda x: 'background: #E5E5E5' if pd.isnull(x) else '')
-    # f.format({**format_kwargs})
+    f.map(lambda x: 'color: #E5E5E5' if pd.isnull(x) else '')
+    f.map(lambda x: 'background: #E5E5E5' if pd.isnull(x) else '')
+    f.format({**format_kwargs})
 
     f = f.set_caption(caption[session_language])
 

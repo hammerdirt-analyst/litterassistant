@@ -8,8 +8,8 @@ absen = 'The first federal report on litter density was 2020 - 2021 ([IQAASL]' \
         'With the consensus goal to reduce exposure to plastics based on the principal of precaution as defined ' \
         'by the EU ([Thresholds](https://publications.jrc.ec.europa.eu/repository/handle/JRC121707)).'
 
-absen2 = 'Here we present the observations in an effort to answer one question:\n\n> _**What am I going to find at ' \
-         'the beach today ?**_\n\n'
+absen2 = 'Here we present the observations in an effort to answer one question:\n\n### What am I going to find at ' \
+         'the beach today ?\n\n'
 
 absen3 = 'The answer can be estimated accurately given consistent data within a defined geographic area. ' \
          'Mathematically it is a question of understanding the probability of finding an object under the ' \
@@ -37,8 +37,8 @@ absfr = 'Le premier rapport fédéral sur la densité des déchets était de 202
         'Avec l\'objectif de réduire l\'exposition aux plastiques sur la base du principe de précaution tel que ' \
         'défini par l\'UE ([Thresholds](https://publications.jrc.ec.europa.eu/repository/handle/JRC121707)).'
 
-absfr2 = 'Nous présentons ici les observations dans le but de répondre à une question :\n\n> _**Qu\'est-ce que je ' \
-         'vais trouver à la plage aujourd\'hui ?**_\n\n'
+absfr2 = 'Nous présentons ici les observations dans le but de répondre à une question :\n\n### Qu\'est-ce que je ' \
+         'vais trouver à la plage aujourd\'hui ?\n\n'
 
 absfr3 = 'La réponse peut être estimée avec précision compte tenu de données cohérentes dans une zone géographique ' \
          'définie. ' \
@@ -67,8 +67,8 @@ absde = 'Der erste Bundesbericht zur Dichte von Abfällen war 2020 - 2021 ([IQAA
         'Mit dem gemeinsamen Ziel, die Exposition gegenüber Kunststoffen auf der Grundlage des Vorsorgeprinzips zu reduzieren, wie es ' \
         'von der EU definiert wird ([Thresholds](https://publications.jrc.ec.europa.eu/repository/handle/JRC121707)).'
 
-absde2 = 'Hier präsentieren wir die Beobachtungen in dem Bemühen, eine Frage zu beantworten:\n\n> _**Was werde ' \
-         'ich heute am Strand finden ?**_\n\n'
+absde2 = 'Hier präsentieren wir die Beobachtungen in dem Bemühen, eine Frage zu beantworten:\n\n### Was werde ' \
+         'ich heute am Strand finden ?\n\n'
 
 absde3 = 'Die Antwort kann genau geschätzt werden, wenn konsistente Daten innerhalb eines definierten ' \
          'geografischen Bereichs vorliegen. ' \

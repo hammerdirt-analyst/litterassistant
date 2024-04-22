@@ -20,7 +20,7 @@ land_use_tab_en2 = "> _We found that urban coverage features, particularly roads
 land_use_tab_en3 = "The land use category, in this model, is a proxy for the type and magnitude of activities that " \
                    "take place in the area surrounding the survey location. \n\n> The land use is _the portion of " \
                    "dry-land within 1'500 of the survey location that has a  designated use or classification from a " \
-                   "reliable topographical map_.\n\n"
+                   "reliable topographical map_.\n\n### How the land is used and the distribution of samples"
 
 land_use_tab_en4 = "The magnitude of the landuse features are ranked, from 1 - 5, according to the area that each " \
                    "category occupies within a radius of 1 500 m of the survey area. For " \
@@ -28,7 +28,7 @@ land_use_tab_en4 = "The magnitude of the landuse features are ranked, from 1 - 5
                    "than 20% of the available space in a circle of radius of 1 500 m centered on the location of " \
                    "interest. A rating of 5 indicates that 80% to 100% of available space is  taken  by this one " \
                    "feature. Therefore, locations with buildings rating of 5 have more than 80% of available land " \
-                   "dedicated to buildings.\n\n"
+                   "dedicated to buildings.\n\n### How the land is used and the pieces of trash per meter"
 
 land_use_tab_en5 = "For each land use category and magnitude we can compute the average sample result. Combined with " \
                    "the previous table, we can define areas of concern based on the shared characteristics of the " \
@@ -54,14 +54,14 @@ land_use_tab_fr2 = "> _Nous avons constaté que les caractéristiques de couvert
 land_use_tab_fr3 = "La catégorie d'utilisation des terres, dans ce modèle, est un proxy pour le type et l'ampleur des activités qui " \
                    "ont lieu dans la zone entourant l'emplacement de l'enquête. \n\n> L'utilisation des terres est _la portion de " \
                    "terre sèche dans un rayon de 1 500 m autour de l'emplacement de l'enquête qui a une " \
-                   "utilisation ou classification désignée sur une carte topographique fiable_.\n\n"
+                   "utilisation ou classification désignée sur une carte topographique fiable_.\n\n### Utilisations des sols et la distribution des échantillons"
 
 land_use_tab_fr4 = "L'ampleur des caractéristiques d'utilisation des terres est classée de 1 à 5, selon la superficie que chaque " \
                    "catégorie occupe dans un rayon de 1 500 m autour de la zone d'enquête. Par exemple, les emplacements d'enquête " \
                    "qui ont un classement forestier de 1 sont des emplacements où les forêts occupent moins de 20 % de l'espace disponible " \
                    "dans un cercle de rayon de 1 500 m centré sur l'emplacement d'intérêt. Un classement de 5 indique que 80 % à 100 % de " \
                    "l'espace disponible est occupé par cette caractéristique unique. Par conséquent, les emplacements avec une note de 5 pour les " \
-                   "bâtiments ont plus de 80 % de terres disponibles dédiées aux bâtiments.\n\n"
+                   "bâtiments ont plus de 80 % de terres disponibles dédiées aux bâtiments.\n\n Utilisations des sols et les déchets par mètre de rivage"
 
 land_use_tab_fr5 = "Pour chaque catégorie et ampleur d'utilisation des terres, nous pouvons calculer le résultat moyen de l'échantillon. Associées au tableau précédent, nous pouvons définir les zones d'intérêt en fonction des caractéristiques communes. Plus il y a d'échantillons dans la région d'intérêt, plus nous pouvons avoir confiance dans ces tableaux."
 
@@ -84,7 +84,7 @@ land_use_tab_de2 = "> _Wir stellten fest, dass städtische Überdeckungsmerkmale
 land_use_tab_de3 = "Die Landnutzungskategorie ist in diesem Modell ein Proxy für die Art und den Umfang der Aktivitäten, die " \
                    "in der Umgebung des Erhebungsorts stattfinden. \n\n> Die Landnutzung ist _der Teil " \
                    "des Festlandes innerhalb von 1'500 m um den Erhebungsort, der auf einer zuverlässigen topographischen Karte " \
-                   "eine bestimmte Verwendung oder Klassifizierung hat_.\n\n"
+                   "eine bestimmte Verwendung oder Klassifizierung hat_.\n\n### Wie das Land genutzt wird und die Verteilung der Stichproben"
 
 land_use_tab_de4 = "Die Größenordnung der Landnutzungseigenschaften wird von 1 bis 5 eingestuft, entsprechend dem Gebiet, das jede " \
                    "Kategorie innerhalb eines Radius von 1 500 m um den Erhebungsbereich einnimmt. Beispielsweise haben Erhebungsorte " \

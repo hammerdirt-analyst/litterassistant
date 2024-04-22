@@ -244,8 +244,7 @@ def main():
             profiled = geospatial.the_land_use_profile(lur_report.n_samples_per_feature(),
                                                        session_language=language_choice)
 
-            rated = geospatial.the_litter_rate_per_land_use(lur_report.rate_per_feature(),
-                                                            session_language=language_choice)
+            rated = lur_report.rate_per_feature()
             # create the map markers
             sres = target_df.copy()
             marker_stats, map_bounds = display.map_markers(sres)
@@ -338,7 +337,7 @@ def main():
                 tiles=session_config.map_tiles['url'],
                 attr=session_config.map_tiles['html_attribution'],
                 location=[47.138, 7.246],
-                zoom_start=9,
+                zoom_start=8,
                 min_zoom=7,
                 max_zoom=11,
                 width=700,
@@ -397,14 +396,11 @@ def main():
         if submitted:
             locs_and_lu = lur_report.df_cat.copy()
             d_loc_mean = locs_and_lu.groupby('location', observed=True, as_index=False)['pcs/m'].mean()
-            # d_loc_mean.rename(columns={'mean': 'pcs/m'}, inplace=True)
             feature_cols = ['location', 'orchards', 'vineyards', 'buildings', 'forest', 'undefined', 'public services']
             d_loc_lu = locs_and_lu.drop_duplicates(feature_cols)
 
             d_loc_lu = d_loc_lu[feature_cols].merge(d_loc_mean[['location', 'pcs/m']], on='location', how='left')
-            # d_loc_lu[feature_cols[1:]] = d_loc_lu[feature_cols[1:]].astype(int)
             display_luse = display.landuse_catalog(d_loc_lu, language_choice)
-            #st.dataframe(d_loc_lu)
 
             st.write(display_luse.to_html(escape=True), unsafe_allow_html=True)
                 

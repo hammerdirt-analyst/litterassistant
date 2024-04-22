@@ -28,7 +28,7 @@ words_land_use_litter_rates = {
 }
 
 column_labels_land_use = {
-    1: '0 - 20%',
+    1: '> 0 - 20%',
     2: '20 - 40%',
     3: '40 - 60%',
     4: '60 - 80%',
@@ -172,6 +172,19 @@ def make_multi_index(column_labels: dict, group_label: dict, nlabels: int, sessi
 def the_land_use_profile(df, feature_columns: [] = session_config.feature_variables,
                          session_language: str = 'en'):
     """Creates a profile of the land use data"""
+
+    # avg_matrix = pd.DataFrame(index=session_config.feature_variables, columns=session_config.bin_labels)
+    #
+    # d = df.copy()
+    #
+    # # Calculate the mean for each category in each identified column
+    # for column in session_config.feature_variables:
+    #     for category in session_config.bin_labels:
+    #         # Filter df by category and calculate mean for the target variable, only if it's relevant
+    #         filtered = df[df[column] == category]
+    #         avg_matrix.at[column, category] = filtered[Y].mean() if not filtered.empty else 0
+    #
+    # return avg_matrix.round(2)
     
     d = df[feature_columns].copy()
     d = d.T
