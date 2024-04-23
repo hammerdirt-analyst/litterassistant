@@ -35,11 +35,11 @@ data_tab_fr4 = "La combinaison d'objets en grands groupes est une pratique coura
 
 data_tab_de1 = "Die häufigsten Objekte in einem Bericht wurden anhand von zwei Kriterien ausgewählt:\n\n* Menge, d.h. die zehn häufigsten Objekte.\n* Die Ausfallrate: Die Wahrscheinlichkeit, dass mindestens ein Objekttyp in einer Stichprobe gefunden wird."
 
-data_tab_de2 = "Ein Vermesser wird wahrscheinlich auf gängige Objekte in verschiedenen Fragmentierungs- oder Zersetzungsstadien stoßen. Objekte, die leicht zu identifizieren oder zu beschreiben sind, haben eine bessere Chance, unter dem richtigen Objektcode platziert zu werden. Zum Beispiel ist ein Zigarettenstummel sofort erkennbar. Fragmentierte oder anderweitig degradierte Objekte sind herausfordernd, zu bestimmen, ob ein Plastikflaschendeckel von einem Getränk oder einem chemischen Behälter stammt, kann schwierig sein, wenn alle Etiketten entfernt oder erodiert sind."
+data_tab_de2 = "Ein Vermesser wird wahrscheinlich auf gängige Objekte in verschiedenen Fragmentierungs- oder Zersetzungsstadien stossen. Objekte, die leicht zu identifizieren oder zu beschreiben sind, haben eine bessere Chance, unter dem richtigen Objektcode platziert zu werden. Zum Beispiel ist ein Zigarettenstummel sofort erkennbar. Fragmentierte oder anderweitig degradierte Objekte sind herausfordernd, zu bestimmen, ob ein Plastikflaschendeckel von einem Getränk oder einem chemischen Behälter stammt, kann schwierig sein, wenn alle Etiketten entfernt oder erodiert sind."
 
 data_tab_de3 = "In diesem Bericht wurden die verschiedenen fragmentierten Kunststoffe, Schaumstoffe und Plastikflaschendeckel zu zusammengesetzten Gruppen zusammengefasst. Die Operation wird entsprechend zusammengefasst:\n\n* __Gfoam :__ Fragmentierter expandierter Polystyrolschaum, Objektcodes: G81, G82, G83\n* __Gfrags :__ Fragmentierte Kunststoffe, Objektcodes: G78, G79, G80, G75, G76, G77\n* __Gcaps :__ Kunststoffflaschendeckel und Deckelringe, Objektcodes: G21, G23, G24\n"
 
-data_tab_de4 = "Das Kombinieren von Objekten zu größeren Gruppen ist eine gängige Praxis im Bereich der Abfallwirtschaft. " \
+data_tab_de4 = "Das Kombinieren von Objekten zu grösseren Gruppen ist eine gängige Praxis im Bereich der Abfallwirtschaft. " \
                "Es ist eine Möglichkeit, die Daten besser interpretierbar zu machen. Ein häufiger Gruppenname ist z.B. SUP für " \
                "Einwegplastik. In dieser ersten Version sind die einzigen Objektgruppen die definierten oder diejenigen, die " \
                "vom Benutzer ausgewählt werden. Sie können eine Gruppe auf dem Discord-Server anfordern ([discord](https://discord.com/)) " \

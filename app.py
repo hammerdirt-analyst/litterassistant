@@ -75,12 +75,12 @@ date_widget_labels = {
     'de': 'Wählen Sie ein Start- und Enddatum'
 }
 
-tab_labels = ["__Data-Presentation__", "__Land-Use__", "__Forecasting__"]
+tab_labels = ["__:blue[Data-Presentation]__", "__:blue[Land-Use]__", "__:blue[Forecasting]__"]
 
 tab_labels_translations = {
     'en': tab_labels,
-    'fr': ["__Présentation des données__", "__Utilisation des terres__", "__Prévisions__"],
-    'de': ["__Datenpräsentation__", "__Landnutzung__", "__Prognosen__"]
+    'fr': ["__:blue[Présentation des données]__", "__:blue[l'utilisation des sols]__", "__:blue[Prévisions]__"],
+    'de': ["__:blue[Datenpräsentation]__", "__:blue[Landnutzung]__", "__:blue[Prognosen]__"]
 }
 
 submitt_labels = {
@@ -97,7 +97,7 @@ invetory_labels = {
 }
 
 def the_most_common_title(an_int: int = 0, session_language: str = 'en'):
-    the_title = f'__{the_most_common_label[session_language]} :__ _{an_int}'
+    the_title = f'#### {the_most_common_label[session_language]} : _{an_int}'
     ending = {
         'en': '% of all objects identified_',
         'fr': '% de tous les objets identifiés_',
@@ -105,7 +105,24 @@ def the_most_common_title(an_int: int = 0, session_language: str = 'en'):
     }
     return f'{the_title} {ending[session_language]}'
 
+the_summary_header = {
+    "en": "### Summary of results",
+    "fr": "### Résumé des résultats",
+    "de": "### Zusammenfassung der Ergebnisse"
 
+}
+
+the_search_results = {
+    "en": "### Search results",
+    "fr": "### Résultats de la recherche",
+    "de": "### Suchergebnisse"
+}
+
+the_landuse_catalog_title = {
+    "en": "### The land use categories for the survey locations",
+    "fr": "### Les catégories d'utilisation des sols pour les lieux d'enquête",
+    "de": "### Die Landnutzungskategorien für die Umfragestandorte"
+}
 
 st.set_page_config(page_title="Litter Density Report", page_icon=":recycle:", layout="centered")
 
@@ -277,9 +294,15 @@ def main():
             header, content, quants_header, quants = display.display_sampling_result_summary(a_data_summary,
                                                                                              language_choice)
 
+            st.markdown(f'{the_search_results[language_choice]}')
+
             
             st.bokeh_chart(scatter_chart, use_container_width=True)
+
+            st.markdown(f'{the_summary_header[language_choice]}')
             col1, col2 = st.columns([.5, .5], gap='small')
+
+
             with col1:
                 st.markdown('<br />', unsafe_allow_html=True)
                 st.markdown(header)
@@ -312,10 +335,11 @@ def main():
                 st.markdown(data_tab_context[2])
                 st.markdown(data_tab_context[3])
 
-        inventory_header = invetory_labels[language_choice]
-        st.markdown(f'__{inventory_header}__')
+
 
         if submitted:
+            inventory_header = invetory_labels[language_choice]
+            st.markdown(f'### {inventory_header}')
             report_inventory = this_report.object_summary()
             report_inventory = report_inventory[report_inventory['quantity'] > 0]
             report_inventory = display.object_summary(report_inventory, language_choice)
@@ -381,26 +405,44 @@ def main():
 
                 st.markdown(land_use_tab_context[2])
                 
-                displayed = display.landuse_profile(profiled, nsamples=this_report.number_of_samples(),
-                                                    session_language=language_choice)
+                displayed = display.landuse_profile(profiled.loc[session_config.feature_variables[:-1]], nsamples=this_report.number_of_samples(), session_language=language_choice)
                 st.write(displayed.to_html(escape=False), unsafe_allow_html=True)
                 st.markdown("<br />", unsafe_allow_html=True)
                 st.markdown(land_use_tab_context[3])
                 
-                displayed_rate = display.litter_rates_per_feature(rated, session_language=language_choice)
+                displayed_rate = display.litter_rates_per_feature(rated.loc[session_config.feature_variables[:-1]], session_language=language_choice)
                 st.write(displayed_rate.to_html(escape=False), unsafe_allow_html=True)
 
                 st.markdown("<br />", unsafe_allow_html=True)
                 st.markdown(land_use_tab_context[4])
+                st.markdown(land_use_tab_context[5])
+
+
+
+                displayed = display.street_profile(profiled.loc[session_config.feature_variables[-1:]],
+                                                    nsamples=this_report.number_of_samples(),
+                                                    session_language=language_choice,
+                                                   caption='profile')
+                st.write(displayed.to_html(escape=False), unsafe_allow_html=True)
+                st.markdown("<br />", unsafe_allow_html=True)
+                displayed_rate = display.street_profile(rated.loc[session_config.feature_variables[-1:]],nsamples=this_report.number_of_samples(),
+                                                                  session_language=language_choice, caption='rate')
+                st.write(displayed_rate.to_html(escape=False), unsafe_allow_html=True)
+                st.markdown("<br />", unsafe_allow_html=True)
+
 
         if submitted:
             locs_and_lu = lur_report.df_cat.copy()
             d_loc_mean = locs_and_lu.groupby('location', observed=True, as_index=False)['pcs/m'].mean()
             feature_cols = ['location', 'orchards', 'vineyards', 'buildings', 'forest', 'undefined', 'public services']
             d_loc_lu = locs_and_lu.drop_duplicates(feature_cols)
+            d_loc_lu[feature_cols[1:]] = d_loc_lu[feature_cols[1:]].astype('str')
+            d_loc_lu.replace('nan', '-', inplace=True)
 
             d_loc_lu = d_loc_lu[feature_cols].merge(d_loc_mean[['location', 'pcs/m']], on='location', how='left')
             display_luse = display.landuse_catalog(d_loc_lu, language_choice)
+
+            st.markdown(the_landuse_catalog_title[language_choice])
 
             st.write(display_luse.to_html(escape=True), unsafe_allow_html=True)
                 

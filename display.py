@@ -435,7 +435,7 @@ def most_common(df, session_language: str = 'en'):
              "quantités. D'autres objets sont trouvés dans moins d'échantillons mais en plus grandes quantités.",
        'de': "Die häufigsten Objekte sind eine Kombination der zehn häufigsten Objekte und derjenigen, die in mehr als "
              "50% der Proben gefunden werden. Einige Objekte werden häufig, aber in geringen Mengen gefunden. Andere "
-             "Objekte werden in weniger Proben, aber in größeren Mengen gefunden."
+             "Objekte werden in weniger Proben, aber in grösseren Mengen gefunden."
     }
 
     caption = {
@@ -514,8 +514,8 @@ def landuse_profile(aprofile: pd.DataFrame, session_language: str = 'en', nsampl
         'fr': f"<b>Le profil d'utilisation des sols et la proportion d'échantillons par catégorie.</b> {explain['fr']}",
         'de': f"<b>Das Landnutzungsprofil und der Anteil der Proben pro Kategorie.</b> {explain['de']}"
     }
-    
-    f = aprofile/nsamples
+    d = aprofile.copy()
+    f = d/nsamples
     a_new_index = [land_use_map[session_language][x] for x in f.index]
     
     f = f.style.apply(highlight_max, axis=1)
@@ -545,7 +545,7 @@ def litter_rates_per_feature(aresult: pd.DataFrame, session_language: str = 'en'
     }
     column_labels_land_use = geospatial.column_labels_land_use
 
-    d = aresult.loc[session_config.feature_variables].copy()
+    d = aresult.copy()
     d.rename(columns=column_labels_land_use, inplace=True)
     a_new_index = [land_use_map[session_language][x] for x in d.index]
     f = d.style.set_table_styles([table_caption_top, caption_css]).format('{:.2f}')
@@ -553,6 +553,53 @@ def litter_rates_per_feature(aresult: pd.DataFrame, session_language: str = 'en'
     f = f.apply(highlight_max, axis=1)
     f.data = f.data.set_index(pd.Index(a_new_index))
     return f
+
+
+def street_profile(aprofile: pd.DataFrame, session_language: str = 'en', nsamples: int = 0, caption: str = 'profile'):
+    """Display the land use profiles"""
+
+    explain_profile = {
+        'en': "The distribtuion of samples by the density of streets. The length of the streets in each buffer is scaled from zero to one."
+              "The highlighted cell is the % of samples at the denisty given by the column name.",
+        'fr': "La distribution des échantillons par densité des rues. La longueur des rues dans chaque tampon est mise à l'échelle de zéro à un."
+              "La cellule en surbrillance est le % des échantillons à la densité donnée par le nom de la colonne.",
+        'de': "Die Verteilung der Proben nach Strassendichte. Die Länge der Strassen in jedem Puffer wird von null bis eins skaliert."
+                "Die hervorgehobene Zelle ist der Prozentsatz der Proben bei der Dichte, die durch den Spaltennamen angegeben ist.",
+    }
+
+    explain_rate = {
+        'en' : "The average number of objects per meter of street in the buffer. The highlighted cell is the maximum value in the row.",
+        'fr': "Le nombre moyen d'objets par mètre de rue dans le tampon. La cellule en surbrillance est la valeur maximale de la ligne.",
+        'de': "Die durchschnittliche Anzahl von Objekten pro Meter Strasse im Puffer. Die hervorgehobene Zelle ist der Maximalwert in der Zeile."
+    }
+
+    if caption == 'profile':
+        caption = {
+            'en': f"<b>The proportion of samples by density of streets.</b> {explain_profile['en']}",
+            'fr': f"<b>La proportion d'échantillons par densité de rues.</b> {explain_profile['fr']}",
+            'de': f"<b>Der Anteil der Proben nach der Dichte der Strassen</b> {explain_profile['de']}"
+        }
+        d = aprofile / nsamples
+        new_cols = [f'< {round(x, 1)}' for x in session_config.bins[1:]]
+        d.columns = new_cols
+        f = d.style.set_table_styles([table_caption_top, caption_css]).format('{:.0%}')
+        f = f.set_caption(caption[session_language])
+        f = f.apply(highlight_max, axis=1)
+        return f
+    if caption == 'rate':
+        caption = {
+            'en': f"<b>The average number of objects per meter of street in the buffer.</b> {explain_rate['en']}",
+            'fr': f"<b>Le nombre moyen d'objets par mètre de rue dans le tampon.</b> {explain_rate['fr']}",
+            'de': f"<b>Die durchschnittliche Anzahl von Objekten pro Meter Strasse im Puffer.</b> {explain_rate['de']}"
+        }
+        d = aprofile.copy()
+        new_cols = [f'< {round(x, 1)}' for x in session_config.bins[1:]]
+        d.columns = new_cols
+        f = d.style.set_table_styles([table_caption_top, caption_css]).format('{:.2f}')
+        f = f.set_caption(caption[session_language])
+        f = f.apply(highlight_max, axis=1)
+        return f
+
 
 
 def map_markers(df, lat_lon: pd.DataFrame = lat_lon):
@@ -631,10 +678,7 @@ def object_summary(df, session_language: str = 'en'):
 
     a_new_index = [code_definitions_map[session_language].loc[x] for x in df.code]
     table_style = [*table_css_styles[:-1], table_caption_top, caption_css, table_first_column_left]
-
-    df["% of total"] = df["% of total"].map(lambda x: '{:.0%}'.format(x))
-
-    df["rate"] = df["rate"].map(lambda x: '{:.0%}'.format(x))
+    df[['rate', '% of total']] = df[['rate', '% of total']].apply(lambda x: (x * 100).round(0).astype(str) + '%')
     df['code'] = a_new_index
     df = df[['code', 'quantity', 'pcs/m', '% of total', 'rate']]
     df = df.sort_values('quantity', ascending=False)
@@ -652,7 +696,7 @@ def landuse_catalog(df, session_language: str = 'en'):
               "the average pcs/m for the location",
         'fr': "Le catalogue d'utilisation des terres détaille la quantité de terre de chaque catégorie d'utilisation des "
               "terres pour chaque emplacement, ainsi que la moyenne des pcs/m pour l'emplacement.",
-        'de': "Der Landnutzungskatalog gibt die Größe des Landes für jede Landnutzungskategorie für jeden Standort an, "
+        'de': "Der Landnutzungskatalog gibt die Grösse des Landes für jede Landnutzungskategorie für jeden Standort an, "
               "sowie den durchschnittlichen Stückpreis für den Standort."
     }
 
@@ -662,15 +706,13 @@ def landuse_catalog(df, session_language: str = 'en'):
         'de': f"<b>Der Landnutzungskatalog.</b> {explain['de']}"
     }
 
-    table_style = [*table_css_styles[:-1], table_caption_top, caption_css, table_first_column_left]
-
     df = df.sort_values('pcs/m', ascending=False)
-    df['pcs/m'] = df['pcs/m'].round(2)
+    df['pcs/m'] = df['pcs/m'].apply(lambda x: f'{round(x, 2)}'  if x > 0 else '0')
     df.rename(columns=land_use_map[session_language], inplace=True)
-    f = df.style.set_table_styles(table_style)
-    f.map(lambda x: 'color: #E5E5E5' if pd.isnull(x) else '')
-    f.map(lambda x: 'background: #E5E5E5' if pd.isnull(x) else '')
-    f.format({**format_kwargs})
+    f = df.style.set_table_styles([table_caption_top, caption_css, table_font, header_row, table_data, table_first_column_left])
+    # f.map(lambda x: 'color: #E5E5E5' if pd.isnull(x) else '')
+    # f.map(lambda x: 'background: #E5E5E5' if pd.isnull(x) else '')
+    # f.format({**format_kwargs})
 
     f = f.set_caption(caption[session_language])
 

@@ -155,7 +155,6 @@ def find_correlated_values(df, threshold: float = session_config.corr_threshold)
             elif df.at[labels[j], labels[i]] <= 0:
                 pass
             elif df.at[labels[i], labels[j]] >= threshold:
-                
                 correlated_features.append((labels[i], labels[j]))
          
     return correlated_features
