@@ -107,7 +107,7 @@ index_label = "sample_id"
 data_directory = 'data'
 
 # file
-survey_data = "results_2015_2021.csv"
+survey_data = "results_2015_2022.csv"
 
 date_format = "%Y-%m-%d"
 
