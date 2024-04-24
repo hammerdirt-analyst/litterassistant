@@ -107,7 +107,7 @@ index_label = "sample_id"
 data_directory = 'data'
 
 # file
-survey_data = "new_allx.csv"
+survey_data = "results_2015_2021.csv"
 
 date_format = "%Y-%m-%d"
 
@@ -331,12 +331,6 @@ litter_thresholds = "https://mcc.jrc.ec.europa.eu/main/dev.py?N=41&O=453"
 guidelines_2023 = "https://mcc.jrc.ec.europa.eu/main/dev.py?N=41&O=466"
 solide_waste_team = "https://hammerdirt-analyst.github.io/solid-waste-team/titlepage.html"
 
-def confirm_configuration(parameters: dict, session_language: str):
-    index = [theme_labels[session_language], feature_labels[session_language], start_date_labels[session_language]
-                , end_date_labels[session_language]]
-    data = list(parameters.values())
-    return pd.DataFrame(data=data, index=index, columns=['Parameters'])
-
 
 def apply_requested_parameters(df, parameters: dict):
 
@@ -345,20 +339,14 @@ def apply_requested_parameters(df, parameters: dict):
     theme = parameters['theme']
     print(theme)
     if theme in feature_types:
-        # print('theme in feature types')
-        # print(df.feature_type.unique())
-        # print(parameters['feature'])
         df = df[df.feature_type == theme]
         df = df[df.feature_name == parameters['feature']]
     else:
-        # print("theme not in feature types")
-        # print(df[theme].unique())
-        # print(parameters['feature'])
-        df = df[df[theme] == parameters['feature']]
+       df = df[df[theme] == parameters['feature']]
 
     df['date'] = pd.to_datetime(df['date'])
     df['date'] = df['date'].dt.date
-    # print(df['date'].dtype)
+
     mask = make_date_mask(df, parameters['start_date'], parameters['end_date'])
     return df[mask]
 
